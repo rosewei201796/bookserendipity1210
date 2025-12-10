@@ -3,14 +3,13 @@ import { Layout, FlipModal, Worldchat } from '@/components';
 import { Heart, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, Play } from 'lucide-react';
 import { useChannels } from '@/state/ChannelContext';
 import { useAuth } from '@/state/AuthContext';
-import { BookCard, CardType, SerendipityRecommendation } from '@/types';
-import { generateImageForCard } from '@/services/imageGeneration';
+import { CardType, SerendipityRecommendation } from '@/types';
 import { generateId } from '@/utils/helpers';
 import { generateRecommendationCard } from '@/services/serendipity';
 import { addSerendipityRecommendation } from '@/utils/storage';
 
 export const ExploreView: React.FC = () => {
-  const { allChannels, channels, createChannel, addCardToChannel, updateChannel, updateCardInChannel, addCommentToCard } = useChannels();
+  const { allChannels, updateCardInChannel, addCommentToCard } = useChannels();
   const { user, toggleLike } = useAuth();
   
   // 只显示 dropToFeed = true 的 Channel
@@ -451,7 +450,6 @@ export const ExploreView: React.FC = () => {
           onClose={() => setShowFlipModal(false)}
           originalCard={currentCard}
           currentChannel={currentChannel}
-          myChannels={channels}
           onApply={handleApplyFlip}
         />
       )}

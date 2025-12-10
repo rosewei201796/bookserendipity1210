@@ -8,7 +8,7 @@ interface FlipModalProps {
   isOpen: boolean;
   onClose: () => void;
   originalCard: BookCard;
-  currentChannel: Channel;
+  currentChannel?: Channel;
   onApply: (
     personaCommentary: string,
     personaName: string,
@@ -20,7 +20,6 @@ export const FlipModal: React.FC<FlipModalProps> = ({
   isOpen,
   onClose,
   originalCard,
-  currentChannel,
   onApply,
 }) => {
   const [serendipityItem, setSerendipityItem] = useState<SerendipityItem | null>(null);

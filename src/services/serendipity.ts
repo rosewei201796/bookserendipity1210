@@ -326,7 +326,7 @@ Make sure the recommended book is real and the quote is authentic or plausible.`
 /**
  * Mock 版本：生成推荐卡片
  */
-function generateRecommendationCardMock(likedCard: BookCard): { bookTitle: string; author: string; text: string; reason: string; drawingPrompt: string } {
+function generateRecommendationCardMock(_likedCard: BookCard): { bookTitle: string; author: string; text: string; reason: string; drawingPrompt: string } {
   const recommendations = [
     {
       bookTitle: '存在与虚无',
