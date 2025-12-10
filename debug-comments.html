@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>调试评论功能</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+        pre { background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .channel { margin-bottom: 20px; padding: 15px; border: 2px solid #333; }
+        .card { margin-left: 20px; padding: 10px; background: #fff; border-left: 3px solid #666; }
+        .comment { margin-left: 40px; padding: 8px; background: #fffacd; }
+    </style>
+</head>
+<body>
+    <h1>📝 评论功能调试工具</h1>
+    
+    <button onclick="checkComments()">🔍 检查所有评论</button>
+    <button onclick="clearStorage()">🗑️ 清除存储</button>
+    <button onclick="location.reload()">🔄 刷新页面</button>
+    
+    <div id="output"></div>
+
+    <script>
+        function checkComments() {
+            const data = JSON.parse(localStorage.getItem('ai-book-channels-data') || '{}');
+            const output = document.getElementById('output');
+            
+            if (!data.channels || data.channels.length === 0) {
+                output.innerHTML = '<p style="color: red;">❌ 没有找到任何频道数据</p>';
+                return;
+            }
+            
+            let html = '<h2>频道和评论数据：</h2>';
+            
+            data.channels.forEach((channel, i) => {
+                html += `<div class="channel">`;
+                html += `<strong>频道 ${i + 1}:</strong> ${channel.name || '未命名'} (${channel.author || '无作者'})`;
+                html += `<br><small>ID: ${channel.id}, 预置: ${channel.isPreset ? '是' : '否'}</small>`;
+                html += `<br><strong>卡片数量:</strong> ${channel.cards ? channel.cards.length : 0}`;
+                
+                if (channel.cards && channel.cards.length > 0) {
+                    channel.cards.forEach((card, j) => {
+                        html += `<div class="card">`;
+                        html += `<strong>卡片 ${j + 1}:</strong> ${card.text?.substring(0, 50)}...`;
+                        html += `<br><small>ID: ${card.id}</small>`;
+                        html += `<br><strong>评论数量:</strong> ${card.comments ? card.comments.length : 0}`;
+                        
+                        if (card.comments && card.comments.length > 0) {
+                            card.comments.forEach((comment, k) => {
+                                html += `<div class="comment">`;
+                                html += `<strong>评论 ${k + 1}:</strong> ${comment.personaEmoji} ${comment.personaName}`;
+                                html += `<br>${comment.commentary?.substring(0, 100)}...`;
+                                html += `</div>`;
+                            });
+                        } else {
+                            html += `<br><small style="color: gray;">该卡片暂无评论</small>`;
+                        }
+                        
+                        html += `</div>`;
+                    });
+                }
+                
+                html += `</div>`;
+            });
+            
+            output.innerHTML = html;
+        }
+        
+        function clearStorage() {
+            if (confirm('确定要清除所有存储数据吗？')) {
+                localStorage.removeItem('ai-book-channels-data');
+                alert('存储已清除！');
+                location.href = '/';
+            }
+        }
+        
+        // 页面加载时自动检查
+        window.onload = checkComments;
+    </script>
+</body>
+</html>
+

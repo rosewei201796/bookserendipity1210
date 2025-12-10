@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>清理存储空间</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .info {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      color: #1976d2;
+    }
+    button {
+      background: #2196f3;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 10px 10px 0;
+    }
+    button:hover {
+      background: #1976d2;
+    }
+    button.danger {
+      background: #f44336;
+    }
+    button.danger:hover {
+      background: #d32f2f;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      display: none;
+    }
+    .result.success {
+      background: #c8e6c9;
+      color: #2e7d32;
+      display: block;
+    }
+    .result.error {
+      background: #ffcdd2;
+      color: #c62828;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📦 存储空间管理</h1>
+    
+    <div class="info" id="storageInfo">
+      <strong>当前存储使用：</strong><br>
+      <span id="storageSize">计算中...</span>
+    </div>
+    
+    <h3>清理选项：</h3>
+    
+    <button onclick="clearImages()">
+      🖼️ 清除所有图片（保留文字）
+    </button>
+    
+    <button onclick="clearAllData()" class="danger">
+      🗑️ 清空所有数据
+    </button>
+    
+    <button onclick="location.href='/'">
+      ← 返回应用
+    </button>
+    
+    <div id="result" class="result"></div>
+  </div>
+  
+  <script>
+    const STORAGE_KEY = 'ai-book-channels-data';
+    
+    // 计算存储大小
+    function getStorageSize() {
+      try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        if (!data) return 0;
+        return new Blob([data]).size;
+      } catch (error) {
+        console.error('Error calculating storage size:', error);
+        return 0;
+      }
+    }
+    
+    // 显示存储信息
+    function updateStorageInfo() {
+      const sizeBytes = getStorageSize();
+      const sizeMB = (sizeBytes / (1024 * 1024)).toFixed(2);
+      const sizeKB = (sizeBytes / 1024).toFixed(0);
+      
+      let data;
+      try {
+        const dataStr = localStorage.getItem(STORAGE_KEY);
+        data = dataStr ? JSON.parse(dataStr) : null;
+      } catch (e) {
+        data = null;
+      }
+      
+      const channelCount = data?.channels?.length || 0;
+      const totalCards = data?.channels?.reduce((sum, ch) => sum + (ch.cards?.length || 0), 0) || 0;
+      
+      document.getElementById('storageSize').innerHTML = `
+        ${sizeMB} MB (${sizeKB} KB)<br>
+        <small>Channels: ${channelCount} | Cards: ${totalCards}</small>
+      `;
+    }
+    
+    // 清除图片
+    function clearImages() {
+      if (!confirm('确定要清除所有图片吗？（文字数据会保留）')) return;
+      
+      try {
+        const dataStr = localStorage.getItem(STORAGE_KEY);
+        if (!dataStr) {
+          showResult('没有数据需要清理', 'success');
+          return;
+        }
+        
+        const data = JSON.parse(dataStr);
+        const dataWithoutImages = {
+          ...data,
+          channels: data.channels.map(channel => ({
+            ...channel,
+            cards: channel.cards.map(card => ({
+              ...card,
+              imageUrl: undefined,
+            })),
+          })),
+        };
+        
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataWithoutImages));
+        showResult('✅ 已清除所有图片！文字数据已保留。', 'success');
+        updateStorageInfo();
+      } catch (error) {
+        showResult('❌ 清除失败: ' + error.message, 'error');
+      }
+    }
+    
+    // 清空所有数据
+    function clearAllData() {
+      if (!confirm('⚠️ 确定要清空所有数据吗？此操作不可恢复！')) return;
+      
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+        showResult('✅ 已清空所有数据！', 'success');
+        updateStorageInfo();
+      } catch (error) {
+        showResult('❌ 清空失败: ' + error.message, 'error');
+      }
+    }
+    
+    // 显示结果
+    function showResult(message, type) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = message;
+      resultDiv.className = 'result ' + type;
+      
+      setTimeout(() => {
+        resultDiv.className = 'result';
+      }, 5000);
+    }
+    
+    // 初始化
+    updateStorageInfo();
+  </script>
+</body>
+</html>
+
