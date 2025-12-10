@@ -407,6 +407,7 @@ export const generateRecommendationCard = async (likedCard: BookCard): Promise<B
     bookTitle: recommendation.bookTitle,
     author: recommendation.author,
     imageUrl,
+    mediaType: 'image',
     createdAt: new Date().toISOString(),
     userId: likedCard.userId,
     sourceCardId: likedCard.id,

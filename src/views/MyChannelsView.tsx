@@ -89,6 +89,7 @@ export const MyChannelsView: React.FC = () => {
         bookTitle: channel.name,
         author: channel.author,
         imageUrl: mediaUrl,
+        mediaType: file.type.startsWith('video/') ? 'video' : 'image',
         createdAt: new Date().toISOString(),
         userId: user.id,
         likesCount: 0,
