@@ -10,7 +10,7 @@ export const Modal: React.FC<{
   if (!isOpen) return null;
 
   return (
-    <div className="absolute inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm">
+    <div className="absolute inset-0 z-[200] flex items-end justify-center bg-black/50 backdrop-blur-sm">
       <div className="w-full h-[90%] bg-white border-t-4 border-black animate-slide-in flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)] rounded-t-[32px] overflow-hidden">
         {/* Modal Header */}
         <div className="h-16 bg-mondrian-yellow border-b-4 border-black flex items-center justify-between px-6 shrink-0">

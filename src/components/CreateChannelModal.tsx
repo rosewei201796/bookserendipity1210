@@ -40,7 +40,7 @@ export const CreateChannelModal: React.FC<CreateChannelModalProps> = ({
   };
 
   return (
-    <div className="absolute inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm">
+    <div className="absolute inset-0 z-[200] flex items-end justify-center bg-black/50 backdrop-blur-sm">
       <div className="w-full h-[85%] bg-white border-t-4 border-black animate-slide-in flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)] rounded-t-[32px] overflow-hidden">
         
         {/* Header */}
